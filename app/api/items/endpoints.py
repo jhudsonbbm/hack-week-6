@@ -7,25 +7,34 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+
 @router.get("/", response_model=List[schemas.Item])
 async def get_items(parent_id: Optional[PydanticOID] = None):
     """Return a list of all items. Optionally search by parent id."""
+    items = list(models.Item.objects().all())
     if parent_id:
-        return list(models.Item.objects(parent__id=parent_id).all())    
-    else:
-        return list(models.Item.objects.all())
+        items = list(
+            filter(
+                lambda x: str(x.parent.id) == parent_id,
+                items,
+            )
+        )
+    return items
+
 
 @router.post("/", response_model=schemas.Item)
 async def create_item(item: schemas.NewItem):
     """Create an item"""
     return models.Item(**item.dict()).save()
 
+
 @router.patch("/{id}/")
 async def update_item(id: PydanticOID, item: schemas.NewItem):
     """Update an item"""
     update_dict = item.dict()
-    update_dict['id'] = id
+    update_dict["id"] = id
     return models.Item(**update_dict()).save()
+
 
 @router.delete("/{id}/")
 async def delete_item(id: PydanticOID):
