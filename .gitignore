@@ -7,3 +7,5 @@ app/api/items/__pycache__
 app/api/lists/__pycache__
 app/.DS_Store
 .DS_Store
+run.py
+.vscode/settings.json
