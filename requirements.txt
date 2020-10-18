@@ -1,3 +1,5 @@
 fastapi
-pymongo
+mongoengine
 uvicorn
+mangum
+dnspython
