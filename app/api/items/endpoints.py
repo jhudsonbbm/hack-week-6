@@ -25,7 +25,8 @@ async def get_items(parent_id: Optional[PydanticOID] = None):
 @router.post("/", response_model=schemas.Item)
 async def create_item(item: schemas.NewItem):
     """Create an item"""
-    return models.Item(**item.dict()).save()
+    item = models.Item(**item.dict()).save()
+    return item
 
 
 @router.patch("/{id}/", response_model=schemas.Item)
