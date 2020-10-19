@@ -15,7 +15,7 @@ async def get_items(parent_id: Optional[PydanticOID] = None):
     if parent_id:
         items = list(
             filter(
-                lambda x: str(x.parent.id) == parent_id,
+                lambda x: str(x.parent) == parent_id,
                 items,
             )
         )
@@ -28,12 +28,13 @@ async def create_item(item: schemas.NewItem):
     return models.Item(**item.dict()).save()
 
 
-@router.patch("/{id}/")
-async def update_item(id: PydanticOID, item: schemas.NewItem):
+@router.patch("/{id}/", response_model=schemas.Item)
+async def update_item(id: PydanticOID, item: schemas.UpdateItem):
     """Update an item"""
-    update_dict = item.dict()
-    update_dict["id"] = id
-    return models.Item(**update_dict()).save()
+    update_dict = {key:val for (key,val) in item.dict().items() if val}
+    item = models.Item.objects.get(id=id)
+    item.modify(**update_dict)
+    return item.save()
 
 
 @router.delete("/{id}/")

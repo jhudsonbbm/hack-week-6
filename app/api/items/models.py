@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from app.api.lists.models import List
 from mongoengine import (
     connection,
@@ -20,7 +21,7 @@ class Item(Document):
     description = StringField(max_length=200)
     completed = BooleanField(default=False, required=True)
     created_at = DateTimeField(default=datetime.utcnow)
-    parent = ReferenceField(List, reverse_delete_rule=CASCADE)
+    parent = StringField(required=True)
 
     meta = {
         "indexes": ["title"],

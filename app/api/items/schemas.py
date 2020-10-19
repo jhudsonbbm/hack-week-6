@@ -17,14 +17,17 @@ class NewItem(BaseModel):
         extra = "ignore"
 
 
-class UpdateItem(NewItem):
-    id: PydanticOID
-    completed: bool
+class UpdateItem(BaseModel):
+    title: Optional[str]
+    description: Optional[str]
+    completed: Optional[bool]
 
     class Config:
         title = "Updated Item"
 
 
-class Item(UpdateItem):
+class Item(NewItem):
+    id: PydanticOID
+    completed: bool
     created_at: datetime
-    parent: List
+    parent: PydanticOID
